@@ -19,7 +19,6 @@ def getCurrentBytes(iface):
         dp.timestamp = datetime.now()
 
         return dp
-
     except:
         print("Interface not found")
         return None
@@ -57,22 +56,21 @@ if __name__ == '__main__':
             }
 
     try:
-        with open(os.path.join(base,'app.cache'), 'rb') as handle:
+        with open(os.path.join(base, args.iface + '.cache'), 'rb') as handle:
             cache = pickle.load(handle)
     except:
         print("WARNING: Could not open cache")
-        exit(3)
         cache = data
 
     if args.reset:
         cache['rx'] = 0
         cache['tx'] = 0
         try:
-            with open(os.path.join(base,'app.cache'), 'wb+') as handle:
+            with open(os.path.join(base, args.iface + '.cache'), 'wb+') as handle:
                 pickle.dump(data, handle)
         except:
             print("WARNING: Error creating cache")
-        exit(3)
+        exit(4)
 
     if data['uptime'] < cache['uptime'] or data['last_rx'] < cache['last_rx']:
         #reboot detected
@@ -86,7 +84,7 @@ if __name__ == '__main__':
     data['tx'] = tx
 
     try:
-        with open(os.path.join(base,'app.cache'), 'wb+') as handle:
+        with open(os.path.join(base, args.iface + '.cache'), 'wb+') as handle:
             pickle.dump(data, handle)
     except:
         print("WARNING: Error creating cache")
