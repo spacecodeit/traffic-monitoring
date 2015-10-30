@@ -1,4 +1,4 @@
-!#/usr/bin/python
+#!/usr/bin/python
 from collections import namedtuple
 import json
 from datetime import datetime
@@ -59,7 +59,7 @@ if __name__ == '__main__':
             print("Could not open cache")
             cache = data
 
-    if data['uptime'] < cache['uptime']:
+    if data['uptime'] < cache['uptime'] or data['last_rx'] < cache['last_rx']:
         #reboot detected
         rx = data['last_rx'] + cache['rx']
         tx = data['last_tx'] + cache['tx']
