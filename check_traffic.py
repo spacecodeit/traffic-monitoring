@@ -1,3 +1,4 @@
+!#/usr/bin/python
 from collections import namedtuple
 import json
 from datetime import datetime
@@ -40,7 +41,7 @@ if __name__ == '__main__':
     parser.add_argument('-c', '--critical', type=int, required=True, help="traffic in bytes")
     args = parser.parse_args()
 
-    bytes = getCurrentBytes("wlan0")
+    bytes = getCurrentBytes(args.iface)
 
     data = {
                 "rx": 0,
