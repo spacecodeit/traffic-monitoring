@@ -5,6 +5,7 @@ from datetime import datetime
 from pprint import pprint
 import pickle
 from argparse import ArgumentParser
+import os
 
 def getCurrentBytes(iface):
     dp = namedtuple("Datapoint", ["rx","tx","timestamp"])
@@ -43,6 +44,7 @@ if __name__ == '__main__':
 
     bytes = getCurrentBytes(args.iface)
 
+    base = os.path.dirname(os.path.realpath(__file__))
     data = {
                 "rx": 0,
                 "tx": 0,
@@ -53,11 +55,11 @@ if __name__ == '__main__':
             }
 
     try:
-        with open('app.cache', 'rb') as handle:
+        with open(os.path.join(base,'app.cache'), 'rb') as handle:
             cache = pickle.load(handle)
     except:
-            print("Could not open cache")
-            cache = data
+        print("WARNING: Could not open cache")
+        cache = data
 
     if data['uptime'] < cache['uptime'] or data['last_rx'] < cache['last_rx']:
         #reboot detected
