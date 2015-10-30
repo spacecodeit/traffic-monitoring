@@ -61,6 +61,7 @@ if __name__ == '__main__':
             cache = pickle.load(handle)
     except:
         print("WARNING: Could not open cache")
+        exit(3)
         cache = data
 
     if args.reset:
@@ -70,7 +71,7 @@ if __name__ == '__main__':
             with open(os.path.join(base,'app.cache'), 'wb+') as handle:
                 pickle.dump(data, handle)
         except:
-            print("Error creating cache")
+            print("WARNING: Error creating cache")
         exit(3)
 
     if data['uptime'] < cache['uptime'] or data['last_rx'] < cache['last_rx']:
@@ -88,7 +89,8 @@ if __name__ == '__main__':
         with open(os.path.join(base,'app.cache'), 'wb+') as handle:
             pickle.dump(data, handle)
     except:
-        print("Error creating cache")
+        print("WARNING: Error creating cache")
+        exit(3)
 
     if (rx + tx) > args.critical:
         print("TRAFFIC WARNING: Traffic exeded limit - " + size_formater(rx+tx))
