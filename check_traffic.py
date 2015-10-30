@@ -38,13 +38,15 @@ def size_formater(num, suffix='B'):
 if __name__ == '__main__':
     parser = ArgumentParser(description="This icinga/nagios plugin monitores the accumulated traffic of a specified interface.")
     parser.add_argument('iface', metavar='INTERFACE')
-    parser.add_argument('-w', '--warning', type=int, required=True, help="traffic in bytes")
-    parser.add_argument('-c', '--critical', type=int, required=True, help="traffic in bytes")
+    parser.add_argument('-w', '--warning', type=int, default=0, help="traffic in bytes")
+    parser.add_argument('-c', '--critical', type=int, default=0, help="traffic in bytes")
+    parser.add_argument('-r', '--reset', action="store_true", help="reset traffic counter")
     args = parser.parse_args()
+
+    base = os.path.dirname(os.path.realpath(__file__))
 
     bytes = getCurrentBytes(args.iface)
 
-    base = os.path.dirname(os.path.realpath(__file__))
     data = {
                 "rx": 0,
                 "tx": 0,
@@ -61,19 +63,29 @@ if __name__ == '__main__':
         print("WARNING: Could not open cache")
         cache = data
 
+    if args.reset:
+        cache['rx'] = 0
+        cache['tx'] = 0
+        try:
+            with open(os.path.join(base,'app.cache'), 'wb+') as handle:
+                pickle.dump(data, handle)
+        except:
+            print("Error creating cache")
+        exit(3)
+
     if data['uptime'] < cache['uptime'] or data['last_rx'] < cache['last_rx']:
         #reboot detected
         rx = data['last_rx'] + cache['rx']
         tx = data['last_tx'] + cache['tx']
     else:
-        rx = cache['rx'] + (data['last_rx'] - cache['rx'])
-        tx = cache['tx'] + (data['last_tx'] - cache['tx'])
+        rx = cache['rx'] + (data['last_rx'] - cache['last_rx'])
+        tx = cache['tx'] + (data['last_tx'] - cache['last_tx'])
 
     data['rx'] = rx
     data['tx'] = tx
 
     try:
-        with open('app.cache', 'wb+') as handle:
+        with open(os.path.join(base,'app.cache'), 'wb+') as handle:
             pickle.dump(data, handle)
     except:
         print("Error creating cache")
