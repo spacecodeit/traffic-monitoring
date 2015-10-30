@@ -72,15 +72,18 @@ if __name__ == '__main__':
     data['rx'] = rx
     data['tx'] = tx
 
-    if (rx + tx) > args.critical:
-        print("TRAFFIC WARNING: Traffic exeded limit - " + size_formater(rx+tx))
-    elif (rx + tx) > args.warning:
-        print("TRAFFIC WARNING: Traffic is near to exeded the limit - " + size_formater(rx+tx))
-    else:
-        print("TRAFFIC OK: Traffic is below the limit - " + size_formater(rx+tx))
-
     try:
         with open('app.cache', 'wb+') as handle:
             pickle.dump(data, handle)
     except:
         print("Error creating cache")
+
+    if (rx + tx) > args.critical:
+        print("TRAFFIC WARNING: Traffic exeded limit - " + size_formater(rx+tx))
+        exit(2)
+    elif (rx + tx) > args.warning:
+        print("TRAFFIC WARNING: Traffic is near to exeded the limit - " + size_formater(rx+tx))
+        exit(1)
+    else:
+        print("TRAFFIC OK: Traffic is below the limit - " + size_formater(rx+tx))
+        exit(0)
