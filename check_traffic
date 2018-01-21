@@ -90,12 +90,14 @@ if __name__ == '__main__':
         print("WARNING: Error creating cache")
         exit(3)
 
+    perfdata = " | traffic={};{};{}".format( (rx+tx), args.warning, args.critical)
+
     if (rx + tx) > args.critical:
-        print("TRAFFIC WARNING: Traffic exeded limit - " + size_formater(rx+tx))
+        print("TRAFFIC WARNING: Traffic exeded limit - " + size_formater(rx+tx) + perfdata)
         exit(2)
     elif (rx + tx) > args.warning:
-        print("TRAFFIC WARNING: Traffic is near to exeded the limit - " + size_formater(rx+tx))
+        print("TRAFFIC WARNING: Traffic is near to exeded the limit - " + size_formater(rx+tx) + perfdata)
         exit(1)
     else:
-        print("TRAFFIC OK: Traffic is below the limit - " + size_formater(rx+tx))
+        print("TRAFFIC OK: Traffic is below the limit - " + size_formater(rx+tx) + perfdata)
         exit(0)
